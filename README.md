@@ -27,3 +27,4 @@ TODO:
 
  - Put the spacer inside the GroupTaskList
  - One widget for multiple groups
+ - Mouse actions
