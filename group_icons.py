@@ -91,7 +91,7 @@ class GroupTaskList(base._Widget, base.PaddingMixin, base.MarginMixin):
         if not surface:
             return
 
-        x = offset + self.padding_x
+        x = offset + (self.icon_size // 2)
         y = (self.bar.height - self.icon_size) // 2
 
         self.drawer.ctx.save()
