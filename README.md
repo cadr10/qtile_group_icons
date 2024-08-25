@@ -26,5 +26,5 @@ Unfortenetely, I don't know how to use for multiple groups at once. For now, you
 TODO:
 
  - Put the spacer inside the GroupTaskList
- - One widget for multiple groups
- - Mouse actions
+ - One widget for multiple groups (struggling with this one)
+ - ~Mouse actions~
