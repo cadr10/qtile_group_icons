@@ -4,43 +4,16 @@ from xdg.IconTheme import getIconPath
 from libqtile import hook, bar
 from libqtile.images import Img
 from libqtile.widget import base
+from libqtile.lazy import lazy
 
 from .icon_utils import _get_class_icon, _get_theme_icon, _get_fallback_icon, _get_custom_icon, get_window_icon
-from .mouse_callbacks import get_clicked, button_press, select_window
+from .mouse_callbacks import *
+
+from .defaults import DEFAULTS
 
 
 class GroupTaskList(base._Widget, base.PaddingMixin, base.MarginMixin):
-    defaults = [
-        ("font", "sans", "Font of the text"),
-        ("fontsize", None, "Font pixel size. Calculated if None."),
-        ("fontcolor", "ffffff", "Text color"),
-        ("icon_size", 16, "Size of the window icons"),
-        ("icon_spacing_left", 0, "Spacing to the left of the icons"),
-        ("icon_spacing_right", 8, "Spacing to the right of the icons"),
-        ("icon_alignment", "center", "Alignment of the icons (left/center/right)"),  # Nova opção
-        ("padding_left", 0, "Padding on the left side"),
-        ("padding_right", 0, "Padding on the right side"),
-        ("margin_x", -20, "Margin on the X axis"),
-        ("theme_mode", "preferred", "Icon theme mode (preferred or fallback)"),
-        ("theme_path", None, "Path to the icon theme"),
-        ("background_inactive", "334455", "Background color for inactive groups"),
-        ("background_active", "005577", "Background color for active group"),
-        ("background_empty", "333344", "Background color for empty groups"),
-        ("fallback_icon", "/home/cadr/.config/qtile/unk.png", "Path to the fallback icon"),
-        ("max_width", 135, "Maximum width of the widget"),
-        ("min_width", 135, "Minimum width of the widget"),
-        ("label_visibility", "None", "Visibility of the label (Always/Empty/None)"),
-        ("label_position", "Center", "Position of the label (Left/Center)"),
-        ("line_thickness_active", 1, "Thickness of the line under the active window"),
-        ("line_thickness_inactive", 1, "Thickness of the line under the active window"),
-        ("line_thickness_floating", 1, "Thickness of the line under the floating window"),
-        ("line_thickness_minimized", 1, "Thickness of the line under the minimized window"),
-        ("line_color_active", "00FF00", "Color of the line under the active window"),
-        ("line_color_inactive", "000000", "Color of the line under the active window"),
-        ("line_color_floating", "FF0000", "Color of the line under the floating window"),
-        ("line_color_minimized", "FFFF00", "Color of the line under the minimized window"),
-        ("line_offset", 5, "Offset of the line from the bottom of the icon"),
-    ]
+    defaults = DEFAULTS
 
     def __init__(self, group_name=None, **config):
         base._Widget.__init__(self, length=bar.CALCULATED, **config)
@@ -53,6 +26,7 @@ class GroupTaskList(base._Widget, base.PaddingMixin, base.MarginMixin):
         self.icon_alignment = self.icon_alignment  # Alinhamento dos ícones
         self._icons_cache = {}
         self.group_name = group_name
+        self.scroll_groups = self.scroll_groups
         self.clicked_window = None
 
     def _configure(self, qtile, bar):
@@ -185,10 +159,9 @@ class GroupTaskList(base._Widget, base.PaddingMixin, base.MarginMixin):
 
         self.drawer.draw(offsetx=self.offsetx, offsety=self.offsety, width=total_width)
 
-
+        
     def button_press(self, x, y, button):
         button_press(self, x, y, button)
-
 
     def _hook_response(self, *args, **kwargs):
         self._icons_cache.clear()  # Clear the cache to force icon updates
@@ -204,9 +177,3 @@ class GroupTaskList(base._Widget, base.PaddingMixin, base.MarginMixin):
         hook.subscribe.current_screen_change(self._hook_response)
         hook.subscribe.changegroup(self._hook_response)
         hook.subscribe.client_focus(self._hook_response)
-
-
-    def update_tasklist(self):
-        self._icons_cache.clear()
-        self.draw()
-        self.bar.draw()
